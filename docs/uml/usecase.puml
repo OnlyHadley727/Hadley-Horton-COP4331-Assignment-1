@@ -1,0 +1,28 @@
+@startuml
+left to right direction
+actor "User" as User
+
+rectangle "COLORS Web Application" {
+  usecase "Log in" as Login
+  usecase "View color page" as View
+  usecase "Add a color" as Add
+  usecase "Search saved colors" as Search
+  usecase "Log out" as Logout
+  usecase "Validate credentials" as Validate
+  usecase "Store color for user" as Store
+  usecase "Retrieve matching colors\nfor current user" as Retrieve
+}
+
+User --> Login
+User --> View
+User --> Add
+User --> Search
+User --> Logout
+Login .> Validate : <<include>>
+Add .> Store : <<include>>
+Search .> Retrieve : <<include>>
+note right of View
+  Access requires a valid
+  user ID cookie.
+end note
+@enduml

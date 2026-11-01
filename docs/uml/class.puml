@@ -1,0 +1,85 @@
+@startuml
+left to right direction
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 55
+skinparam ranksep 85
+skinparam packageStyle rectangle
+
+package "Frontend" {
+  class LoginPage <<HTML>> {
+    +loginName: input
+    +loginPassword: input
+    +loginResult: element
+  }
+  class ColorPage <<HTML>> {
+    +searchText: input
+    +colorText: input
+    +colorList: element
+    +colorSearchResult: element
+    +colorAddResult: element
+  }
+}
+
+class ColorsClient <<JavaScript>> {
+  -userId: integer
+  -firstName: string
+  -lastName: string
+  +doLogin()
+  +saveCookie()
+  +readCookie()
+  +doLogout()
+  +addColor()
+  +searchColor()
+}
+
+package "PHP API" {
+  class LoginAPI <<PHP>> {
+    +getRequestInfo()
+    +returnWithInfo()
+    +returnWithError()
+  }
+  class AddColorAPI <<PHP>> {
+    +getRequestInfo()
+    +returnWithError()
+  }
+  class SearchColorsAPI <<PHP>> {
+    +getRequestInfo()
+    +returnWithInfo()
+    +returnWithError()
+  }
+}
+
+database "COP4331 MySQL" as DB
+
+class User <<data model>> {
+  +ID: integer
+  +firstName: string
+  +lastName: string
+  +Login: string
+  +Password: string
+}
+class Color <<data model>> {
+  +UserId: integer
+  +Name: string
+}
+
+LoginPage --> ColorsClient : doLogin()
+ColorPage --> ColorsClient : addColor(), searchColor(), doLogout()
+ColorsClient --> LoginAPI : POST login/password
+ColorsClient --> AddColorAPI : POST color/userId
+ColorsClient --> SearchColorsAPI : POST search/userId
+LoginAPI --> DB : SELECT Users
+AddColorAPI --> DB : INSERT Colors
+SearchColorsAPI --> DB : SELECT Colors
+User "1" -- "0..*" Color : owns
+
+note bottom of ColorsClient
+  Browser cookie stores firstName, lastName,
+  and userId; expiration is 20 minutes.
+end note
+note bottom of User
+  User and Color are conceptual data classes
+  representing MySQL records, not PHP classes.
+end note
+@enduml

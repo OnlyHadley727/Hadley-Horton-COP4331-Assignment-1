@@ -1,0 +1,40 @@
+@startuml
+start
+:Open index.html;
+:Enter username and password;
+:doLogin() sends JSON POST;
+:Login.php checks Users table;
+if (Credentials valid?) then (yes)
+  :Return user ID and name;
+  :saveCookie() stores user data\n(cookie expires in 20 minutes);
+  :Open color.html;
+  :readCookie();
+  if (User ID cookie present?) then (yes)
+    :Show color page;
+    while (User remains logged in?) is (yes)
+      if (Selected action?) then (Add color)
+        :Enter color;
+        :addColor() sends color and userId;
+        :AddColor.php inserts into Colors;
+        :Show add result;
+      elseif (Search colors)
+        :Enter search text;
+        :searchColor() sends search and userId;
+        :SearchColors.php queries Colors\nfor matching names belonging to user;
+        :Display matching colors or no-results error;
+      else (Logout)
+        :doLogout() clears cookie;
+        :Redirect to index.html;
+        stop
+      endif
+    endwhile (no)
+    :Return to login page;
+  else (no)
+    :Redirect to index.html;
+  endif
+else (no)
+  :Display invalid login message;
+  :Remain on index.html;
+endif
+stop
+@enduml
