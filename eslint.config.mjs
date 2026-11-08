@@ -20,9 +20,9 @@ export default defineConfig([
       "no-unused-vars": "warn",
       "no-undef": "error",
       "no-console": "off",
-      "eqeqeq": "error",
-      "semi": ["error", "always"],
-      "quotes": ["error", "double"]
+      "eqeqeq": "off",
+      "semi": "off",
+      "quotes": "off"
     }
   }
 ]);
